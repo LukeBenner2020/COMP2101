@@ -30,5 +30,3 @@ find / -type f -executable -exec ls -lh {} + 2>/dev/null |
 
 # sort/format whatever to display the list properly
 sort -rh -k 5 | head -n 12 | awk -F" +|/" '{ print $4, $5, $NF }'; echo""
-
-exit
