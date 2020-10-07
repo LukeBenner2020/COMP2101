@@ -26,7 +26,7 @@ wget -q -O ~/public_html/pics/pics.zip http://zonzorp.net/pics.zip && unzip -d ~
 # Task 1: Improve this script to also retrieve and install the files kept in the https://zonzorp.net/pics.tgz tarfile
 #     test to make sure the download and extraction commands work
 #     then delete the local copy of the tarfile if the extraction was successful
-wget -q -O ~/public_html/pics/pics.tgz https://zonzorp.net/pics.tgz && tar -xvzf ~/public_html/pics/pics.tgz && rm ~/public_html/pics/pics.tgz && echo "Worked" || echo "Did not work"
+wget -q -O ~/public_html/pics/pics.tgz https://zonzorp.net/pics.tgz && tar -xvzf ~/public_html/pics/pics.tgz -C ~/public_html/pics && rm ~/public_html/pics/pics.tgz && echo "Worked" || echo "Did not work"
 
 
 # Make a report on what we have in the Pictures directory
