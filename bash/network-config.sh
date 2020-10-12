@@ -81,7 +81,7 @@ lanHostname=$(getent hosts $(ip a s $(ip a |awk '/: e/{gsub(/:/,"");print $2}')|
 myExternalIP=$(curl -s icanhazip.com)
 myExternalName=$(getent hosts $(curl -s icanhazip.com) | awk '{print $2}')
 routerIP=$(awk 'FNR==3 {print $1}' /etc/hosts)
-routerName=$(awk '/192.168.17.2/ {print $2}' /etc/hosts)
+routerName=$(awk -v ip="$routerIP" '$0~ip {print $2}' /etc/hosts)
 
 cat <<EOF
 
