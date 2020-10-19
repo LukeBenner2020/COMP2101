@@ -108,6 +108,12 @@ EOF
   #####
 }
 
+#####
+# parse arguments
+# if -v is provided, set variable "verbose" equal to "yes".
+# if anything other than -v is provided,
+# it is assumed to be an interface and stored in the variable "interface".
+#####
 while [ $# -gt 0 ]; do
   case "$1" in
     -v )
@@ -120,12 +126,18 @@ while [ $# -gt 0 ]; do
   shift
 done
 
+#####
+# if user provides an interface, generate a report for the interface and exit
+#####
 if [ $interface ]
 then
   generate_report $interface
   exit
 fi
 
+#####
+# loop through the interfaces and generate a report for any that are not the loopback
+#####
 for interface in `ip link show | awk 'NR%2==1 {print $2}' | cut -d : -f 1`; do
   [ $interface = "lo" ] && continue
   generate_report $interface
