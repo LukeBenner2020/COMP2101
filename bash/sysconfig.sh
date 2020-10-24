@@ -1,5 +1,5 @@
 #!/bin/bash
-tempfile=/temp/*
+
 # this script displays system information
 
 # TASK: This script produces a report. It does not communicate errors or deal with the user pressing ^C
@@ -41,7 +41,7 @@ function displayhelp {
 
 # This function will remove all the temp files created by the script
 # The temp files are all named similarly, "/tmp/somethinginfo.$$"
-
+tempfile=/temp/*
 function cleanup {
   rm -f $tempfile
 }
