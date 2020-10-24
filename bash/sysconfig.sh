@@ -16,7 +16,7 @@ tempfile=/temp/*
 # Usage:
 #   error-message ["some text to print to stderr"]
 function error-message {
-  >&2 echo "$1 is invalid" 
+  >&2 echo "$1 is invalid"
 }
 
 # This function will send a message to stderr and exit with a failure status
@@ -57,7 +57,7 @@ trap cleanup 2
 #This function produces the network configuration for our report
 function getipinfo {
   # reuse our netid.sh script from lab 4
-  netid.sh
+  ./netid.sh
 }
 
 # process command line options
