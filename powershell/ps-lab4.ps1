@@ -9,76 +9,22 @@
 # Include your network adapter configuration report from lab 3 done
 # Include the video card vendor, description, and current screen resolution in this format: horizontalpixels x verticalpixels (win32_videocontroller) done
 
-#Computer System Information
-function ComputerSystem {
-Get-WmiObject win32_computersystem |
-Format-List description
+Import-Module SystemInfoFunctions
+
+if ($args.Contains("-System")) {
+    # ComputerSystem
+    ProcessorInfo
+    OperatingSystem
+    PhysicalMemory
+    VideoController
+}
+if ($args.Contains("-Disks")) {
+    DiskDriveInformation
+}
+if ($args.Contains("-Network")) {
+    AdapterSpecs
 }
 
-#Operating System Information
-function OperatingSystem {
-$operatingSystem = Get-WmiObject win32_operatingsystem |
-format-list Name, version
-$operatingSystem
+if ($args.length -lt 1) {
+    Write-Output "Write out -System, -Disks, or -Network"
 }
-
-#Processor Information
-function ProcessorInfo {
-$processor = Get-WmiObject -class win32_processor
-Get-WmiObject -class Win32_CacheMemory | 
-sort-object DeviceID |
-format-list CurrentClockSpeed, description, NumberOfCores, DeviceID,@{e={($_.BlockSize*$_.NumberOfBlocks)};n="Size KB"}
-$processor
-}
-
-#Physical Memory Information
-function PhysicalMemory {
-$physicalMemory = Get-WmiObject -class win32_physicalmemory
-
-$physicalMemoryProperties = $physicalMemory | format-table Tag, description, capacity, BankLabel, DeviceLocator
-$physicalMemoryProperties
-$totalRAM = $physicalMemory | Measure-Object -Property Capacity -Sum 
-write-output "Total RAM: $($totalRAM.Sum) bytes"
-}
-
-#Disk Drive information
-function DiskDriveInformation {
-$diskdrives = Get-CIMInstance CIM_diskdrive
-
-    foreach ($disk in $diskdrives) {
-    $partitions = $disk|get-cimassociatedinstance -resultclassname CIM_diskpartition
-            foreach ($partition in $partitions) {
-                $logicaldisks = $partition | get-cimassociatedinstance -resultclassname CIM_logicaldisk
-                foreach ($logicaldisk in $logicaldisks) {
-                     new-object -typename psobject -property @{Model=$disk.Model
-                                                               "Size(GB)"=$logicaldisk.size / 1gb -as [int]
-                                                               Vendor=$logicaldisk.vendor
-                                                               "Free Space("=$logicaldisk.FreeSpace / 1gb -as [int]
-                                                               }
-                }
-             }
-    } 
-}
-
-#network adapter configuration report from lab 3
-function AdapterSpecs{
-$adapterSpec = Get-WmiObject win32_networkadapterconfiguration |
-Sort-Object Index | Where-Object { $_.ipenabled -eq $True  } |
-Format-Table Description,Index,IPAddress,IPSubnet,DNSDomain,@{n="DNSServer";e={$_.DNSServerSearchOrder[0]}}
-$adapterSpec
-}
-
-#Video Card Information
-function VideoController {
-$resolution = Get-WmiObject win32_videocontroller | 
-Format-list description, vendor, @{n='Resolution';e={-join $_.VideoModeDescription[0..10] }}
-$resolution
-}
-
-ComputerSystem
-OperatingSystem
-ProcessorInfo
-PhysicalMemory
-DiskDriveInformation
-AdapterSpecs
-VideoController
